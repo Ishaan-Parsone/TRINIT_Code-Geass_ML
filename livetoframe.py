@@ -153,7 +153,7 @@ def imagesinCollage():
 
     # Release the VideoCapture object
     cap.release()
-    
+
 def func(frame):
     classes = ['D00', 'D10', 'D20', 'D40']
     alt_names = {'D00': 'lateral_crack', 'D10': 'linear_cracks', 'D20': 'aligator_crakcs', 'D40': 'potholes'}
@@ -239,74 +239,77 @@ def func(frame):
     # cv2.show()
 
 
+def detectLive():
+        
+    # Set the video source (0 for default camera)
+    video_source = "static/sample_input.mp4"
 
-# Set the video source (0 for default camera)
-video_source = "static/sample_input.mp4"
+    # rewriteFrames(video_source,"static/output_video_30fps.mp4",5)
 
-rewriteFrames(video_source,"static/output_video_30fps.mp4",5)
+    # Set the frames per second (fps)
+    fps = 30
 
-# Set the frames per second (fps)
-fps = 30
+    # Create a VideoCapture object
+    cap = cv2.VideoCapture("static/sample_input.mp4")
 
-# Create a VideoCapture object
-cap = cv2.VideoCapture("static/output_video_30fps.mp4")
-
-# Check if the video capture is successful
-if not cap.isOpened():
-    print("Error: Could not open video capture.")
-    exit()
+    # Check if the video capture is successful
+    if not cap.isOpened():
+        print("Error: Could not open video capture.")
+        exit()
 
 
-# Set the starting time in seconds (e.g., 10 seconds)
-start_time_seconds = 12
+    # Set the starting time in seconds (e.g., 10 seconds)
+    start_time_seconds = 12
 
-# Set the starting frame index based on the desired start time
-start_frame_index = int(start_time_seconds * fps)
+    # Set the starting frame index based on the desired start time
+    start_frame_index = int(start_time_seconds * fps)
 
-# Set the current frame index to the starting frame
-cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame_index)
+    # Set the current frame index to the starting frame
+    cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame_index)
 
-# Create a directory to save the frames
-output_dir = "frames"
-os.makedirs(output_dir, exist_ok=True)
+    # Create a directory to save the frames
+    output_dir = "frames"
+    os.makedirs(output_dir, exist_ok=True)
 
-# Initialize frame counter
-frame_count = 0
+    # Initialize frame counter
+    frame_count = 0
 
-while True:
-    # Read a frame from the video capture
-    ret, frame = cap.read()
+    while True:
+        # Read a frame from the video capture
+        ret, frame = cap.read()
 
-    # Check if the frame is successfully captured
-    if not ret:
-        print("Error: Could not read frame.")
-        break
+        # Check if the frame is successfully captured
+        if not ret:
+            print("Error: Could not read frame.")
+            break
 
-    # Display the live capture (optional)
-    # cv2.imshow("Live Capture", frame)
+        # Display the live capture (optional)
+        # cv2.imshow("Live Capture", frame)
 
-    # Make the entire image darker
-    
-    # alpha = input("alpha: ")
-    # beta = input("alpha: ")
-    darker_frame = make_darker(frame.copy(), alpha=1 , beta=1  )
-    
+        # Make the entire image darker
+        
+        # alpha = input("alpha: ")
+        # beta = input("alpha: ")
+        darker_frame = make_darker(frame.copy(), alpha=1 , beta=1  )
+        
 
-    # Display the adjusted frame
-    func(darker_frame)
+        # Display the adjusted frame
+        func(darker_frame)
 
-    # Save the frame as a JPG image
-    # frame_filename = os.path.join(output_dir, f"frame_{frame_count:04d}.jpg")
-    # cv2.imwrite(frame_filename, frame)
+        # Save the frame as a JPG image
+        # frame_filename = os.path.join(output_dir, f"frame_{frame_count:04d}.jpg")
+        # cv2.imwrite(frame_filename, frame)
 
-    # Increment frame counter
-    frame_count += 1
+        # Increment frame counter
+        frame_count += 1
 
-    # Wait for the specified time to achieve the desired fps
-    delay = int(1000 / fps)
-    if cv2.waitKey(delay) & 0xFF == 27:  # Press 'Esc' to exit the loop
-        break
+        # Wait for the specified time to achieve the desired fps
+        delay = int(1000 / fps)
+        if cv2.waitKey(delay) & 0xFF == 27:  # Press 'Esc' to exit the loop
+            break
 
-# Release the VideoCapture and close any open windows
-cap.release()
-cv2.destroyAllWindows()
+        # Release the VideoCapture and close any open windows
+    cap.release()
+    cv2.destroyAllWindows()
+
+detectLive()
