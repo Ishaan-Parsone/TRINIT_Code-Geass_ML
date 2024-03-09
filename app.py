@@ -6,17 +6,10 @@ import threading
 import os
 from flask import session, g
 from datetime import timedelta
-from flask_login import current_user
 
 app = Flask(__name__)
 app.secret_key = '6e32fb8fceefd0b085f4246855f33a87'
 
-@app.before_request
-def before_request():
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=60)
-    session.modified = True
-    g.user = current_user
 
 # Function for object detection
 def object_detection(input_video, output_video):

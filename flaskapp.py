@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response , request, redirect, url_for
 import cv2
 import numpy as np
 import threading
@@ -7,6 +7,9 @@ import base64
 
 app = Flask(__name__)
 app.secret_key = '6e32fb8fceefd0b085f4246855f33a87'
+
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def func(frame):
     classes = ['D00', 'D10', 'D20', 'D40']
@@ -195,14 +198,44 @@ def detectLive(video_source):
 
 
 # Routes
+        
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mkv', 'mov'}  # Add more allowed extensions if needed
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/video_feed/')
-def video_feed():
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'video' in request.files:
+        video_file = request.files['video']
+
+        if video_file and allowed_file(video_file.filename):
+            # Save the uploaded file to the uploads directory
+            video_file.save(os.path.join(app.config['UPLOAD_FOLDER'], video_file.filename))
+
+            # Process the video file as needed
+            # ...
+
+            return redirect(url_for('live_preview_video', video_name=video_file.filename))
+        else:
+            return "Invalid file format. Allowed formats: mp4, avi, mkv, mov."
+
+    return "No video file provided."
+
+@app.route('/live_preview_video/<video_name>')
+def live_preview_video(video_name):
+     return render_template('preview.html', video_name=video_name)
+
+@app.route('/video_feed/<vid_path>')
+def video_feed(vid_path):
     # return "hi"
-    return Response(detectLive("static/sample_input.mp4"), mimetype='multipart/x-mixed-replace;boundary=frame')
+    # vid_path = "sample_input.mp4"
+    return Response(detectLive("static/uploads/"+vid_path), mimetype='multipart/x-mixed-replace;boundary=frame')
 
 
 # Main
