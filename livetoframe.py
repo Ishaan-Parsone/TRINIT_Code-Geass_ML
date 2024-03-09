@@ -134,6 +134,8 @@ def imagesinCollage():
         # Read the current frame
         ret, frame = cap.read()
 
+        frame = func(frame)
+
         # Check if the frame is successfully read
         if not ret:
             print(f"Error reading frame {frame_number}.")
@@ -259,7 +261,7 @@ def detectLive():
 
 
     # Set the starting time in seconds (e.g., 10 seconds)
-    start_time_seconds = 12
+    start_time_seconds = 60
 
     # Set the starting frame index based on the desired start time
     start_frame_index = int(start_time_seconds * fps)
@@ -273,7 +275,7 @@ def detectLive():
 
     # Initialize frame counter
     frame_count = 0
-
+    local_fps = start_frame_index
     while True:
         # Read a frame from the video capture
         ret, frame = cap.read()
@@ -290,11 +292,13 @@ def detectLive():
         
         # alpha = input("alpha: ")
         # beta = input("alpha: ")
-        darker_frame = make_darker(frame.copy(), alpha=1 , beta=1  )
+        # darker_frame = make_darker(frame.copy(), alpha=1 , beta=1  )
         
 
         # Display the adjusted frame
-        func(darker_frame)
+        func(frame)
+        local_fps +=  4
+        cap.set(cv2.CAP_PROP_POS_FRAMES,  local_fps)
 
         # Save the frame as a JPG image
         # frame_filename = os.path.join(output_dir, f"frame_{frame_count:04d}.jpg")
@@ -313,3 +317,4 @@ def detectLive():
     cv2.destroyAllWindows()
 
 detectLive()
+# imagesinCollage()
