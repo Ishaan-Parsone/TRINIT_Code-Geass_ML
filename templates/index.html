@@ -35,7 +35,7 @@
       border-radius: 10px;
       box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.3);
       width: 600px;
-      height: 260px;
+      height: 50vh !important;
       background-color: rgba(51, 51, 51, 0.356) !important;
       padding: 10px 30px 40px;
       box-shadow: 0px 0px 200px rgba(245, 245, 245, 0.7),
@@ -55,7 +55,7 @@
     }
 
     .drop_box {
-      margin: 10px 0;
+      margin: 20px 0;
       padding: 30px;
       display: flex;
       align-items: center;
@@ -108,18 +108,24 @@
     }
 
 
-    .input-group{
+    .input-group {
       background: transparent !important;
     }
 
-    .input-group input{
+    .input-group input {
       background: transparent;
-      color:whitesmoke;
+      color: whitesmoke;
     }
-    .input-group input:focus{
+
+    .input-group input:focus {
       background: transparent;
-      color:whitesmoke;
+      color: whitesmoke;
     }
+
+    .selected_file_text{
+      /* -webkit-text-shadow: 0px 0px 10px lightgreen; */
+    }
+
 
   </style>
 
@@ -134,10 +140,10 @@
 
   <div class="container">
     <div class="card" id="card">
-      <h3>Upload Video</h3>
+      <h3 style="text-align: left; margin-top:12px;">Road Damage Detector</h3>
       <div class="drop_box">
         <header>
-          <h4>Select File here</h4>
+          <h4 id="select_file">Select File</h4>
         </header>
         <p>Files Supported: All Video Files</p>
         <form action="/upload" method="post" enctype="multipart/form-data">
@@ -147,7 +153,7 @@
       <div class="mb-3">
 
         &nbsp;
-        
+
         <div class="input-group mb-3">
           <span class="input-group-text">Start:</span>
           <input type="number" class="form-control" placeholder="Seconds" name="start_second" value="0" aria-label="Username">
@@ -163,6 +169,20 @@
 
   <script>
     $(document).ready(function() {
+
+      var fileInput = document.getElementById('fileID');
+
+      // Attach the onchange event listener
+      fileInput.addEventListener('change', handleFileSelection);
+
+      // Function to handle file selection
+      function handleFileSelection() {
+        // Check if a file is selected
+        if (fileInput.files.length > 0) {
+          document.getElementById('select_file').innerHTML = 'File selected: <span class="selected_file_text">' + fileInput.files[0].name+'</span>';
+        }
+      }
+
       $(document).on("click", "#choose_file_btn", function() {
         $("#fileID").click();
       })
