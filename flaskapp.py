@@ -96,7 +96,7 @@ def func(frame):
     return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     # cv2.show()
 
-def detectLive(video_source):
+def detectLive(video_source, start_second, skip_frame):
         
     # Set the video source (0 for default camera)
     # video_source = "static/sample_input.mp4"
@@ -116,7 +116,7 @@ def detectLive(video_source):
 
 
     # Set the starting time in seconds (e.g., 10 seconds)
-    start_time_seconds = 60
+    start_time_seconds = int(start_second)
 
     # Set the starting frame index based on the desired start time
     start_frame_index = int(start_time_seconds * fps)
@@ -161,7 +161,7 @@ def detectLive(video_source):
             yield (b'--frame\r\n' 
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
-        local_fps +=  4
+        local_fps +=  int(skip_frame)
         cap.set(cv2.CAP_PROP_POS_FRAMES,  local_fps)
 
         # Save the frame as a JPG image
@@ -213,6 +213,11 @@ def index():
 def upload():
     if 'video' in request.files:
         video_file = request.files['video']
+        start_second = request.form.get("start_second")
+        skip_frame = request.form.get("skip_frame")
+        
+
+        print(start_second, skip_frame)
 
         if video_file and allowed_file(video_file.filename):
             # Save the uploaded file to the uploads directory
@@ -221,21 +226,21 @@ def upload():
             # Process the video file as needed
             # ...
 
-            return redirect(url_for('live_preview_video', video_name=video_file.filename))
+            return redirect(url_for('live_preview_video', video_name=video_file.filename, start_second=start_second,skip_frame=skip_frame))
         else:
             return "Invalid file format. Allowed formats: mp4, avi, mkv, mov."
 
     return "No video file provided."
 
-@app.route('/live_preview_video/<video_name>')
-def live_preview_video(video_name):
-     return render_template('preview.html', video_name=video_name)
+@app.route('/live_preview_video/<video_name>/<start_second>/<skip_frame>')
+def live_preview_video(video_name,start_second, skip_frame):
+     return render_template('preview.html', video_name=video_name, start_second=start_second,skip_frame=skip_frame)
 
-@app.route('/video_feed/<vid_path>')
-def video_feed(vid_path):
+@app.route('/video_feed/<vid_path>/<start_second>/<skip_frame>')
+def video_feed(vid_path, start_second, skip_frame):
     # return "hi"
     # vid_path = "sample_input.mp4"
-    return Response(detectLive("static/uploads/"+vid_path), mimetype='multipart/x-mixed-replace;boundary=frame')
+    return Response(detectLive("static/uploads/"+vid_path, start_second, skip_frame), mimetype='multipart/x-mixed-replace;boundary=frame')
 
 
 # Main

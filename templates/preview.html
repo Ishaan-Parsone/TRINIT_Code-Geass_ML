@@ -69,8 +69,8 @@
 <h2 class="title">Video Live Processing & Preview</h2>
 <br>
 <div class="ambient-player">
-  <img id="video_feed" class="main" src="{{ url_for('video_feed',vid_path=video_name) }}" alt="Video Feed">
-  <img id="video_feed" class="decoy" src="{{ url_for('video_feed',vid_path=video_name) }}" alt="Video Feed">
+  <img id="video_feed" class="main" src="{{ url_for('video_feed',vid_path=video_name,start_second=start_second,skip_frame=skip_frame) }}" alt="Video Feed">
+  <img id="video_feed" class="decoy" src="{{ url_for('video_feed',vid_path=video_name,start_second=start_second,skip_frame=skip_frame) }}" alt="Video Feed">
 </div>
 <div class="glass-toolbar">
     <button class="glass-button" onclick="window.location.href='/'">GO BACK</button>
